@@ -21,6 +21,7 @@
             len = snprintf(buffer,len+1,path,value);    \
 }
 
+/* List all of the slaves on a given w1 bus */
 extern int list_slaves (int busid, char **result) {
     
     int counter     = 0;
@@ -44,10 +45,16 @@ extern int list_slaves (int busid, char **result) {
         exit(1);
     }
     
+    /* Read information from our bus. */
     while (read(fd, buf, (ROM_CODE_LENGTH)) > 0) {
        
+        /* Null terminate the last item in the buffer */
         buf[(ROM_CODE_LENGTH-1)] = '\0';
         
+        /*
+         * Because this is actually not a file, but a device, make sure we're not repeating ourselves.
+         * If so, break out of the loop, and clean up
+         */
         if (buf == result[0]) { break; }
         
         
@@ -63,6 +70,16 @@ extern int list_slaves (int busid, char **result) {
     }
     
     close(fd);
+    free(path);
+    
+    /* 
+     * Sanity check: Make sure we actually found something.
+     * If not, set the first item in result to \0 and reset the counter to 0.
+     */
+    if (strstr(result[0],"not found.") != NULL){
+        memset(result[0],'\0',ROM_CODE_LENGTH);
+        counter = 0;
+    }
     
     
     return counter;
