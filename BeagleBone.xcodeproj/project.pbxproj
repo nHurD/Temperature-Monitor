@@ -1,0 +1,166 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		4003D886169E212100D8E497 /* w1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = w1.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
+		4003D888169E227300D8E497 /* w1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = w1.c; sourceTree = "<group>"; };
+		4010050D169CF51C003E2685 /* gpio-int-test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "gpio-int-test.c"; sourceTree = "<group>"; };
+		4013DABD169CE0EE00F54503 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; usesTabs = 1; };
+		408279EC16A0F4B200636A57 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		4013DAAD169CDF2A00F54503 = {
+			isa = PBXGroup;
+			children = (
+				408279EC16A0F4B200636A57 /* main.c */,
+				4003D888169E227300D8E497 /* w1.c */,
+				4003D886169E212100D8E497 /* w1.h */,
+				4010050D169CF51C003E2685 /* gpio-int-test.c */,
+				4013DABD169CE0EE00F54503 /* Makefile */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		4013DAB6169CDF3A00F54503 /* Beagle */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 4013DAB7169CDF3A00F54503 /* Build configuration list for PBXLegacyTarget "Beagle" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = /Users/jrsteele/Projects/BeagleBone;
+			dependencies = (
+			);
+			name = Beagle;
+			passBuildSettingsInEnvironment = 1;
+			productName = Beagle;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		4013DAAF169CDF2A00F54503 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+			};
+			buildConfigurationList = 4013DAB2169CDF2A00F54503 /* Build configuration list for PBXProject "BeagleBone" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 4013DAAD169CDF2A00F54503;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4013DAB6169CDF3A00F54503 /* Beagle */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		4013DAB4169CDF2A00F54503 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		4013DAB5169CDF2A00F54503 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		4013DAB8169CDF3A00F54503 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		4013DAB9169CDF3A00F54503 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4013DAB2169CDF2A00F54503 /* Build configuration list for PBXProject "BeagleBone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4013DAB4169CDF2A00F54503 /* Debug */,
+				4013DAB5169CDF2A00F54503 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4013DAB7169CDF3A00F54503 /* Build configuration list for PBXLegacyTarget "Beagle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4013DAB8169CDF3A00F54503 /* Debug */,
+				4013DAB9169CDF3A00F54503 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4013DAAF169CDF2A00F54503 /* Project object */;
+}
