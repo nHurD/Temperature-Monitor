@@ -84,8 +84,8 @@ extern int list_slaves ( int busid, char **result ) {
      * Sanity check: Make sure we actually found something.
      * If not, set the first item in result to \0 and reset the counter to 0.
      */
-    if (strstr(result[0],"not found.") != NULL){
-        memset(result[0],'\0',ROM_CODE_LENGTH);
+    if ( strstr ( result[0], "not found." ) != NULL ) {
+        memset( result[0], '\0', ROM_CODE_LENGTH );
         counter = 0;
     }
     
