@@ -8,7 +8,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "w1.h"
+
+#define TO_FARENHEIT(C) (1.8 * C) + 32
+
+
+float get_temperature_from_data ( char *data ) ;
+
 
 int main ( void ) {
     /* Init the array */
@@ -32,3 +40,30 @@ int main ( void ) {
     
     return 0;
 }
+
+
+float get_temperature_from_data ( char *data ) {
+    float result = 0.0;
+    
+    /* Find the location of the start of the temperature informaiton */
+    char *pos = strstr ( data, "t=" );
+    
+    /* Sanity check, if not found, throw error */
+    if ( pos == NULL ) {
+        perror("No Data");
+        exit(1);
+    }
+    
+    /* Move the pointer past t= */
+    pos += 2;
+    
+    /* Set Null char at end */
+    pos[strlen(pos)-1] = '\0';
+    
+    /* Convert to float, then divide by 1000 */
+    result = atof(pos) / 1000;
+    
+    return result;
+    
+}
+

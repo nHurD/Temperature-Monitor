@@ -15,6 +15,15 @@
 
 #include "w1.h"
 
+
+#define ROM_CODE_LENGTH 16
+
+
+const char* W1_PATHS[] = {
+    "/sys/devices/w1_bus_master%d/w1_master_slaves",
+    "/sys/bus/w1/devices/%s/w1_slave"
+};
+
 #define PARSE_PATH(path, value, buffer) {               \
             int len = snprintf(NULL, 0, path, value);   \
             buffer = malloc((len+1) * sizeof(char));    \
@@ -22,7 +31,6 @@
 }
 
 
-#define TO_FARENHEIT(C) (1.8 * C) + 32
 
 #define BUFF_SIZE 16
 
@@ -132,30 +140,5 @@ extern char *read_data ( char *slave ) {
     return result;
 }
 
-
-float get_temperature_from_data ( char *data ) {
-    float result = 0.0;
-    
-    /* Find the location of the start of the temperature informaiton */
-    char *pos = strstr ( data, "t=" );
-    
-    /* Sanity check, if not found, throw error */
-    if ( pos == NULL ) {
-        perror("No Data");
-        exit(1);
-    }
-    
-    /* Move the pointer past t= */
-    pos += 2;
-    
-    /* Set Null char at end */
-    pos[strlen(pos)-1] = '\0';
-    
-    /* Convert to float, then divide by 1000 */
-    result = atof(pos) / 1000;
-    
-    return result;
-    
-}
 
 
