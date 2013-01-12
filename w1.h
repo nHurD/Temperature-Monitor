@@ -14,11 +14,11 @@
 
 const char* W1_PATHS[] = {
     "/sys/devices/w1_bus_master%d/w1_master_slaves",
-    "/sys/bus/w1/devices/%s"
+    "/sys/bus/w1/devices/%s/w1_slave"
 };
 
-extern int list_slaves(int busid, char **result);
+extern int list_slaves ( int busid, char **result );
 
-extern void *read_data(char *slave);
+extern char *read_data ( char *slave );
 
 #endif
