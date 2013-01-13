@@ -31,7 +31,8 @@ int main ( void ) {
         data = read_data(result[0]);
         float temperature = get_temperature_from_data( data );
         
-        printf("%f\r",TO_FARENHEIT(temperature));
+        
+        printf("%3.2f\r",TO_FARENHEIT(temperature));
         fflush(stdout);
         free(data);
     }
