@@ -1,9 +1,9 @@
 CC = /opt/local/bin/arm-linux-gnueabi-gcc
-CFLAGS = -fPIC -shared -c
-FLAGS = -g
+CFLAGS = -fPIC -shared -c 
+FLAGS = -g -I ./include/
 LD = /opt/local/bin/arm-linux-gnueabi-ld
 
-SOURCES = w1.c 
+SOURCES = src/w1.c 
 OBJECTS = $(SOURCES: .c=.o) 
 TARGET = libw1.so
 PROG_NAME = get_temperature
@@ -17,7 +17,7 @@ $(TARGET): $(OBJECTS)
 	$(CC) $(FLAGS) $(CFLAGS) -o $(TARGET) $(OBJECTS)
 
 main: $(TARGET)
-	$(CC) $(FLAGS) -L. -lw1 -o $(PROG_NAME) main.c
+	$(CC) $(FLAGS) -L. -L./lib -lw1 -lsqlite3 -o $(PROG_NAME) src/main.c src/sqlite.c
 
 clean:
 	rm $(PROG_NAME) $(TARGET)
@@ -25,3 +25,4 @@ clean:
 deploy: main
 	scp $(TARGET) $(USER)@$(HOST):
 	scp $(PROG_NAME) $(USER)@$(HOST):
+

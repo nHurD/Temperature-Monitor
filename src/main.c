@@ -8,8 +8,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 
+#include "sqlite.h"
 #include "w1.h"
 
 #define TO_FARENHEIT(C) (1.8 * C) + 32
@@ -23,13 +25,30 @@ int main ( void ) {
     char **result = malloc(1 * sizeof *result);
     char *data;
     
+    DATA storage_data;
+    
     int len = 0;
     
     len = list_slaves(1,result);
     
+    storage_data.sensor_id = result[0];
+    
+    create_database ( "temperature_data.db" );
+    close_connection ( );
+    
+    
     while(1) {
         data = read_data(result[0]);
         float temperature = get_temperature_from_data( data );
+        
+        init_connection ( "temperature_data.db" );
+        
+        storage_data.time_information = time ( NULL );
+        storage_data.temperature = temperature;
+        
+        insert_data ( &storage_data );
+        
+        close_connection ( );
         
         
         printf("%3.2f\r",TO_FARENHEIT(temperature));
