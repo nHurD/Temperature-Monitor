@@ -13,12 +13,25 @@
 
 #include "sqlite.h"
 
-#define SANITY_CHECK(result, expected, error) { if (result != expected) { printf("%s\n", error); return result; } }
+#define SANITY_CHECK(result, expected, error)  {                           \
+                        if (result != expected) {                          \
+                            printf ( "%s, code: %d\n\tMessage: %s\n",      \
+                                      error,                               \
+                                      result,                              \
+                                      sqlite3_errmsg ( _ctx )              \
+                            );                                             \
+                            return result;                                 \
+                        }                                                  \
+        }
 
-#define CREATE_STATEMENT "CREATE TABLE TemperatureData (       \
-                            time_data   DATETIME PRIMARY KEY,  \
-                            sensor_id   TEXT,                  \
-                            temperature REAL                   \
+
+
+
+#define CREATE_STATEMENT "CREATE TABLE TemperatureData (                \
+                            row_id INTEGER PRIMARY KEY AUTOINCREMENT,   \
+                            time_data   DATETIME,                       \
+                            sensor_id   TEXT,                           \
+                            temperature REAL                            \
                          );"
 
 #define INSERT_STATEMENT "INSERT INTO TemperatureData (     \
@@ -32,16 +45,31 @@
                           );"
 
 
+/* FIXME: Change function calls to eliminate global variable */
 sqlite3 *_ctx;
 
+/* Init Connection:
+ *  Open the specified Sqlite Database.
+ *  If no database is found at the given path, make an attempt at creating it first.
+ */
 int init_connection ( char *path ) {
     int result = 0;
     
-    result = sqlite3_open ( path, &_ctx );
+    /* Try to open the specified database */
+    result = sqlite3_open_v2 ( path, &_ctx, SQLITE_OPEN_READWRITE, NULL );
     
     /* Sanity check */
     if ( result != SQLITE_OK ) {
         sqlite3_close( _ctx );
+        
+        printf ( "Error opening: %d\n", result );
+        
+        /* Try to create the database */
+        result = sqlite3_open ( path, &_ctx );
+        
+        
+        create_database ( path );
+        
         return result;
         
     }
@@ -50,15 +78,22 @@ int init_connection ( char *path ) {
 
 }
 
+/* Close Connections:
+ *  Close the current connection to the database
+ */
 int close_connection ( ) {
     return sqlite3_close ( _ctx );
 }
 
+/* Create Database:
+ *  Create a database at the specified path
+ */
 int create_database ( char *path ) {
     int             result = 0;
     sqlite3_stmt    *statement;
     
     
+    /* If the connection is null, initialize the connection before proceeding */
     if ( _ctx == NULL ) {
         result = init_connection ( path );
         
@@ -66,6 +101,7 @@ int create_database ( char *path ) {
     
     }
     
+    /* Prepare the Create table statement for execution, and ensure it's ready to go */
     result = sqlite3_prepare ( _ctx,
                                CREATE_STATEMENT,
                                strlen(CREATE_STATEMENT),
@@ -75,6 +111,7 @@ int create_database ( char *path ) {
                               
     SANITY_CHECK ( result, SQLITE_OK, "prepare create" );
     
+    /* Perform the execution, and ensure we got our expected results */
     result = sqlite3_step ( statement );
     
     SANITY_CHECK ( result, SQLITE_DONE, "step create" );
@@ -84,10 +121,14 @@ int create_database ( char *path ) {
     return result;
 }
 
+/* Insert Data:
+ *  Insert data into the Temperature Data table for later analysis
+ */
 int insert_data ( DATA *data ) {
     int             result = 0;
     sqlite3_stmt    *statement;
     
+    /* Prepare our statement */
     result = sqlite3_prepare ( _ctx,
                                INSERT_STATEMENT,
                                strlen( INSERT_STATEMENT ),
@@ -97,11 +138,12 @@ int insert_data ( DATA *data ) {
     
     SANITY_CHECK ( result, SQLITE_OK, "prepare insert" );
     
-    char buffer[20];
+    /* Convert time_t to char * */
+    char buffer[40];
+    strftime ( buffer, 40, "%Y-%m-%d %H:%M:%S", localtime ( &data->time_information ) );
     
-    strftime ( buffer, 20, "%Y-%m-%d %H:%M:%S", localtime ( &data->time_information ) );
-    
-    result = sqlite3_bind_text ( statement,
+    /* Bind the time data to the statement */
+    result = sqlite3_bind_text ( statement,                     /* Time Data */
                                  1,
                                  buffer,
                                  -1,
@@ -110,6 +152,7 @@ int insert_data ( DATA *data ) {
     
     SANITY_CHECK ( result, SQLITE_OK, "bind time" );
     
+    /* Bind the sensor id to the statement */
     result = sqlite3_bind_text ( statement,                     /* Sensor ID */
                                  2,
                                  data->sensor_id,
@@ -119,7 +162,8 @@ int insert_data ( DATA *data ) {
     
     SANITY_CHECK ( result, SQLITE_OK, "bind sensor" );
 
-    
+
+    /* Bind the temperature data to the statement */
     result = sqlite3_bind_double ( statement,                   /* Temperature */
                                   3,
                                   data->temperature
@@ -127,35 +171,15 @@ int insert_data ( DATA *data ) {
     
     SANITY_CHECK ( result, SQLITE_OK, "bind temperature" );
     
+    /* Execute and perform a sanity check */
     result = sqlite3_step ( statement );
     
-    SANITY_CHECK ( result, SQLITE_DONE, "step" );
+    SANITY_CHECK ( result, SQLITE_DONE, "step insert" );
     
     sqlite3_finalize ( statement );
     
     return result;
 }
 
-
-
-
-/* int main ( void ) {
-    int result = create_database ( "test.db" );
-    DATA data;
-    
-    data.temperature = 61.2;
-    data.sensor_id = "test";
-    data.time_information = time ( NULL );
-    
-    result = insert_data ( &data );
-    
-    printf ( "%d\n", result );
-    
-    
-    
-    close_connection ();
-    
-    return 0;
-} */
 
 
