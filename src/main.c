@@ -10,13 +10,13 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "sqlite.h"
 #include "w1.h"
 
 #define TO_FARENHEIT(C) (1.8 * C) + 32
-#define ROUND(val) ceilf ( val * 100 ) / 100;
+
 
 
 
