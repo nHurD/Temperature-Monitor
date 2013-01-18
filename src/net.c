@@ -24,33 +24,44 @@
 #define DIE(msg) { perror ( msg ); exit ( 1 ); }
 
 
-void handle_tcp_connection ( int client_socket ) {
+int handle_tcp_connection ( int client_socket ) {
     char buffer[RECV_BUF_SIZE];
     int message_size;
     
-    if ( ( message_size = recv ( client_socket, buffer, RECV_BUF_SIZE, 0 ) ) < 0 ) {
+    
+    message_size = recv ( client_socket, buffer, RECV_BUF_SIZE, 0 );
+    
+    /* Sanity check */
+    if ( message_size < 0 ) {
         DIE ( "recv() failed." );
     }
     
-    while ( message_size > 0 ) {
-        if ( send ( client_socket, buffer, message_size, 0 ) != message_size ) {
-            DIE ( "send() failed." );
-        }
-        
-        if ( ( message_size = recv ( client_socket, buffer, RECV_BUF_SIZE, 0 ) ) < 0 ) {
-            DIE ( "recv() failed." );
-        }
+    /* Client disconnected, return that status */
+    if ( message_size == 0 ) {
+        return 0;
     }
     
-    close ( client_socket );
+    /* Echo back to the client */
+    if ( send ( client_socket, buffer, message_size, 0 ) != message_size ) {
+        DIE ( "send() failed." );
+    }
+    
+    /* Still active */
+    return 1;
+    
 }
 
 int create_tcp_socket ( unsigned short port ) {
     int sock;
     struct sockaddr_in addr;
+    int yes = 1;
     
     if ( (sock = socket ( PF_INET, SOCK_STREAM, IPPROTO_TCP ) ) < 0 ) {
         DIE ( "socket() failed." );
+    }
+    
+    if ( ( setsockopt ( sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof ( int ) ) ) < 0 ) {
+        DIE ( "setsockopt() failed." );
     }
     
     memset ( &addr, 0, sizeof ( addr ) );
@@ -89,49 +100,61 @@ int accept_tcp_connection ( int sock ) {
 
 
 void run_server ( ) {
-    int server_socket;
+    fd_set master;
+    fd_set readSet;
     
-    fd_set sock_set;
-
     
-    struct timeval selTimeout;
-    int running = 1;
-    int descriptor;
+    int listener;
+    int new_fd;
+    int max_fd;    
+  
+    int i;
     
-    server_socket = create_tcp_socket ( LISTEN_PORT );
+    listener = create_tcp_socket ( LISTEN_PORT );
     
-    while (running) {
-        FD_ZERO ( &sock_set );
+    FD_ZERO ( &master );
+    
+    FD_SET ( listener, &master );
+    
+    max_fd = listener;
+    
+    for ( ;; ) {
         
-        FD_SET ( STDIN_FILENO, &sock_set );
-        
-        FD_SET ( server_socket, &sock_set );
-        
-        descriptor = server_socket;
-        
-        selTimeout.tv_sec = TIMEOUT;
-        selTimeout.tv_usec = 0;
-        
-        if ( select ( descriptor+1,  &sock_set, NULL, NULL, &selTimeout ) == 0  ) {
-            printf ( "Timeout reached\n" );
-        } else {
-            if ( FD_ISSET ( 0, &sock_set ) ) {
-                printf ( "Shutting down.\n" );
-                getchar ();
-                running = 0;
-            }
+        readSet = master;
+        if ( select ( max_fd + 1, &readSet, NULL, NULL, NULL ) == -1 ) {
+            DIE ( "select() failed" );
             
-            if (FD_ISSET (server_socket, &sock_set ) ) {
-                printf ( "Received request on %d: ", LISTEN_PORT );
-                handle_tcp_connection ( accept_tcp_connection ( server_socket ) );
-            }
         }
         
+        for ( i = 0; i <= max_fd; i++ ) {
+            if (FD_ISSET ( i, &readSet ) ) {
+                if ( i == listener ) {
+                
+                    new_fd = accept_tcp_connection ( listener );
+                    
+                    
+                    FD_SET ( new_fd, &master );
+                
+                    if ( new_fd > max_fd ) {
+                        max_fd = new_fd;
+                    }
+                    
+                } else {
+                    
+                    if ( handle_tcp_connection ( i ) == 0 ) {
+                        printf ( "client closed out\n" );
+                        close ( i );
+                        FD_CLR ( i, &master );
+                    }
+                    
+                }
+            }
+        }
     }
     
-    close ( server_socket );
-    
+    close ( listener );
 
+    
 }
 
 
