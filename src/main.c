@@ -14,10 +14,9 @@
 
 #include "sqlite.h"
 #include "w1.h"
+#include "net.h"
 
 #define TO_FARENHEIT(C) (1.8 * C) + 32
-
-
 
 
 float get_temperature_from_data ( char *data ) ;
