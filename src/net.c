@@ -20,36 +20,61 @@
 
 
 #define LISTEN_PORT 9099
-#define TIMEOUT 10
 
-
-
-int handle_tcp_connection ( int client_socket, char*(*call_back)(int, char[RECV_BUF_SIZE]) ) {
+/* Handle tcp connection:
+ *  Handle any request coming from a connected client. Once data has been received, send it to the specified handler for processing.
+ */
+int handle_tcp_connection ( int client_socket, char*(*call_back)(char*) ) {
     char buffer[RECV_BUF_SIZE];
-    int message_size;
+    
+    char *message = NULL;
     char *data;
     
-    message_size = recv ( client_socket, buffer, RECV_BUF_SIZE, 0 );
+    int message_size;
+    int read_finished = 0;
     
-    /* Sanity check */
-    if ( message_size < 0 ) {
-        DIE ( "recv() failed." );
+    while ( read_finished == 0 ) {
+    
+        message_size = recv ( client_socket, buffer, RECV_BUF_SIZE, 0 );
+    
+        /* Sanity check */
+        if ( message_size < 0 ) {
+            DIE ( "recv() failed." );
+        }
+        
+        /* Client disconnected, return that status */
+        if ( message_size == 0 ) {
+            return 0;
+        }
+        
+        if ( message == NULL ) {
+            message = malloc ( message_size * sizeof ( char ) + 1 );
+            strncpy ( message, buffer, message_size );
+        } else {
+            char *tmp;
+            tmp = realloc ( message, strlen ( message ) + message_size * sizeof ( char ) + 1 );
+            if (tmp == NULL ) {
+                DIE ("realloc().");
+            }
+            message = tmp;
+            strncat ( message, buffer, message_size );
+        }
+        
+        if ( strstr ( message, "\n") != NULL ) {
+            read_finished = 1;
+        }
     }
     
-    /* Client disconnected, return that status */
-    if ( message_size == 0 ) {
-        return 0;
-    }
     
-    data = call_back( client_socket, buffer );
+    data = call_back( message );
     
-    printf ( "data: %s\n", data);
+    free ( message );
     
     if ( send ( client_socket, data, strlen ( data ), 0 ) != strlen ( data ) ) {
         DIE ( "send() failed." );
     }
-    
-    free ( data );
+
+   // free ( data );
     
     
     /* Still active */
@@ -98,25 +123,11 @@ int accept_tcp_connection ( int sock ) {
         DIE ( "accept() failed." );
     }
     
-    printf ( "Handling client %s\n" , inet_ntoa ( client_addr.sin_addr ) );
-    
     return client_socket;
     
 }
 
-char *handle_callback ( int socket, char data[RECV_BUF_SIZE] ) {
-    char *result;
-    
-    char *cmd = malloc ( 4 * sizeof(char));
-    
-    memcpy(cmd,data,3);
-   
-    
-    
-}
-
-
-void run_server ( char*(*callback)(int, char[RECV_BUF_SIZE]) ) {
+void run_server ( char*(*callback)(char*) ) {
     fd_set master;
     fd_set readSet;
     
@@ -159,7 +170,6 @@ void run_server ( char*(*callback)(int, char[RECV_BUF_SIZE]) ) {
                 } else {
                     
                     if ( handle_tcp_connection ( i, callback ) == 0 ) {
-                        printf ( "client closed out\n" );
                         close ( i );
                         FD_CLR ( i, &master );
                     }
@@ -174,11 +184,16 @@ void run_server ( char*(*callback)(int, char[RECV_BUF_SIZE]) ) {
     
 }
 
-
-/* Testing */
-int main ( void ) {
+char *msg_callback ( char * data ) {
+    printf("callback: %s\n", data);
     
-    run_server ( handle_callback );
+    return "Return";
+}
+
+
+int main ( void ) {
+    run_server ( msg_callback );
     
     return 0;
 }
+
