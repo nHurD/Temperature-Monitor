@@ -9,8 +9,15 @@
 #ifndef BeagleBone_net_h
 #define BeagleBone_net_h
 
-int handle_tcp_connection ( int ) ;
+#define RECV_BUF_SIZE 32
+
+
+#define DIE(msg) { perror ( msg ); exit ( 1 ); }
+
+int handle_tcp_connection ( int, char*(*)(int, char[RECV_BUF_SIZE]) );
 int create_tcp_socket ( unsigned short );
 int accept_tcp_connection ( int );
+
+void run_server ( char*(*)( int, char[RECV_BUF_SIZE]) );
 
 #endif

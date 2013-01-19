@@ -14,20 +14,20 @@
 #include <string.h>
 #include <fcntl.h>
 
+#include "net.h"
+
 #define MAX_PENDING 5
-#define RECV_BUF_SIZE 32
+
 
 #define LISTEN_PORT 9099
 #define TIMEOUT 10
 
 
-#define DIE(msg) { perror ( msg ); exit ( 1 ); }
 
-
-int handle_tcp_connection ( int client_socket ) {
+int handle_tcp_connection ( int client_socket, char*(*call_back)(int, char[RECV_BUF_SIZE]) ) {
     char buffer[RECV_BUF_SIZE];
     int message_size;
-    
+    char *data;
     
     message_size = recv ( client_socket, buffer, RECV_BUF_SIZE, 0 );
     
@@ -41,10 +41,16 @@ int handle_tcp_connection ( int client_socket ) {
         return 0;
     }
     
-    /* Echo back to the client */
-    if ( send ( client_socket, buffer, message_size, 0 ) != message_size ) {
+    data = call_back( client_socket, buffer );
+    
+    printf ( "data: %s\n", data);
+    
+    if ( send ( client_socket, data, strlen ( data ), 0 ) != strlen ( data ) ) {
         DIE ( "send() failed." );
     }
+    
+    free ( data );
+    
     
     /* Still active */
     return 1;
@@ -98,8 +104,19 @@ int accept_tcp_connection ( int sock ) {
     
 }
 
+char *handle_callback ( int socket, char data[RECV_BUF_SIZE] ) {
+    char *result;
+    
+    char *cmd = malloc ( 4 * sizeof(char));
+    
+    memcpy(cmd,data,3);
+   
+    
+    
+}
 
-void run_server ( ) {
+
+void run_server ( char*(*callback)(int, char[RECV_BUF_SIZE]) ) {
     fd_set master;
     fd_set readSet;
     
@@ -141,7 +158,7 @@ void run_server ( ) {
                     
                 } else {
                     
-                    if ( handle_tcp_connection ( i ) == 0 ) {
+                    if ( handle_tcp_connection ( i, callback ) == 0 ) {
                         printf ( "client closed out\n" );
                         close ( i );
                         FD_CLR ( i, &master );
@@ -161,7 +178,7 @@ void run_server ( ) {
 /* Testing */
 int main ( void ) {
     
-    run_server ( );
+    run_server ( handle_callback );
     
     return 0;
 }
