@@ -74,7 +74,7 @@ int handle_tcp_connection ( int client_socket, char*(*call_back)(char*) ) {
         DIE ( "send() failed." );
     }
 
-   // free ( data );
+    free ( data );
     
     
     /* Still active */
@@ -182,18 +182,5 @@ void run_server ( char*(*callback)(char*) ) {
     close ( listener );
 
     
-}
-
-char *msg_callback ( char * data ) {
-    printf("callback: %s\n", data);
-    
-    return "Return";
-}
-
-
-int main ( void ) {
-    run_server ( msg_callback );
-    
-    return 0;
 }
 
