@@ -9,6 +9,8 @@
 #ifndef BeagleBone_w1_h
 #define BeagleBone_w1_h
 
+#define ROM_CODE_LENGTH 16
+
 extern int list_slaves ( int busid, char **result );
 
 extern char *read_data ( char *slave );

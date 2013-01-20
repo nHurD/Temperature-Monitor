@@ -16,9 +16,6 @@
 #include "w1.h"
 
 
-#define ROM_CODE_LENGTH 16
-
-
 const char* W1_PATHS[] = {
     "/sys/devices/w1_bus_master%d/w1_master_slaves",
     "/sys/bus/w1/devices/%s/w1_slave"

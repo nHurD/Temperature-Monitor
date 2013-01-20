@@ -65,7 +65,6 @@ int handle_tcp_connection ( int client_socket, char*(*call_back)(char*) ) {
         }
     }
     
-    
     data = call_back( message );
     
     free ( message );

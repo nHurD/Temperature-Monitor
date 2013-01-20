@@ -17,7 +17,7 @@ $(TARGET): $(OBJECTS)
 	$(CC) $(FLAGS) $(CFLAGS) -o $(TARGET) $(OBJECTS)
 
 main: $(TARGET)
-	$(CC) $(FLAGS) -L. -L./lib -lw1 -lsqlite3 -o $(PROG_NAME) src/main.c src/sqlite.c
+	$(CC) $(FLAGS) -L. -L./lib -lw1 -lsqlite3 -o $(PROG_NAME) src/main.c src/sqlite.c src/net.c
 
 clean:
 	rm $(PROG_NAME) $(TARGET)
