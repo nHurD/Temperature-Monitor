@@ -142,6 +142,7 @@ char *net_communication_callback ( char * data ) {
             
             result = temporary_value;
             
+            
         }
     }
     
