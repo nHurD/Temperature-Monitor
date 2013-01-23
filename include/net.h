@@ -15,9 +15,26 @@
 
 #define DIE(msg) { perror ( msg ); exit ( 1 ); }
 
+#ifdef D_PTHREAD
+
+#include <pthread.h>
+
+typedef struct {
+    pthread_attr_t *attr;
+    int socket;
+    char*(*call_back)(char*);
+} arg_t;
+
+int handle_tcp_connection ( void * );
+
+#else
+
 int handle_tcp_connection ( int, char*(*)( char* ) );
-int create_tcp_socket ( unsigned short );
-int accept_tcp_connection ( int );
+
+#endif
+
+//int create_tcp_socket ( unsigned short );
+//int accept_tcp_connection ( int );
 
 void run_server ( char*(*)( char* ) );
 

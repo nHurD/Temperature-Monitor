@@ -22,6 +22,7 @@
 
 #define LISTEN_PORT 9099
 
+#ifndef D_PTHREAD
 /* Handle tcp connection:
  *  Handle any request coming from a connected client. Once data has been received, send it to the specified handler for processing.
  */
@@ -93,6 +94,7 @@ int handle_tcp_connection ( int client_socket, char*(*call_back)(char*) ) {
     return 1;
     
 }
+#endif
 
 /* Create TCP Socket:
  *  Create a TCP server socket for sending / receiving information across the wire.
