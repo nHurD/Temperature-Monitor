@@ -19,7 +19,7 @@
 
 #include "net.h"
 
-int handle_tcp_connection ( void *ptr ) {
+void *handle_tcp_connection ( void *ptr ) {
     char buffer[RECV_BUF_SIZE];
     fd_set readSet;
     
@@ -69,30 +69,48 @@ int handle_tcp_connection ( void *ptr ) {
                         }
                         
                         if ( message == NULL ) {
-                            message = malloc ( RECV_BUF_SIZE +1 );
-                            memset ( message, '\0', RECV_BUF_SIZE + 1 );
+                            message = malloc ( RECV_BUF_SIZE + 1 );
+                            
                             strncpy ( message, buffer, RECV_BUF_SIZE );
                         } else {
                             /* Resize as necessary */
                             char *tmp;
-                            tmp = realloc ( message, strlen ( message ) + read_len * sizeof ( char ) + 1 );
+                            //tmp = realloc ( message, strlen ( message ) + read_len * sizeof ( char ) + 1 );
+                            
+                            tmp = malloc ( strlen ( message ) + read_len + 1 );
+                            
                             
                             /* Sanity check */
                             if (tmp == NULL ) {
                                 DIE ( "realloc()." );
                             }
                             
+                            memset ( tmp, '\0', strlen ( message ) + read_len + 1 );
+                            
+                            strncpy ( tmp, message, strlen ( message ) );
+                            
+                            strncat ( tmp, buffer, RECV_BUF_SIZE );
+                            
                             message = tmp;
-                            /* Append to the message */
-                            strncat ( message, buffer, read_len );
+                            
+                          
                         }
                         
                         if ( strstr ( message, "\n") != NULL ) {
                             message_finished = 1;
+                            read_len = strcspn ( message, "\n" );
+                            
+                            message [read_len +1 ] = '\0';
+                            
+                           
                         }
                     }
                     
+                   
+                    
+                    
                     if ( arg->call_back != NULL && no_error == 1 ) {
+                        
                         char *data = arg->call_back ( message );
                         
                         free ( message );
@@ -106,6 +124,8 @@ int handle_tcp_connection ( void *ptr ) {
                         
                         free ( data );
                         
+                        data = NULL;
+                        
                         
                     }
                         
@@ -117,7 +137,7 @@ int handle_tcp_connection ( void *ptr ) {
     free ( arg->attr );
     free ( arg );
     
-    return 0;
+    return NULL;
 }
 
 

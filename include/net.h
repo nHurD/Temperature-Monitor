@@ -28,7 +28,7 @@ typedef struct {
     char*(*call_back)(char*);
 } arg_t;
 
-int handle_tcp_connection ( void * );
+void *handle_tcp_connection ( void * );
 
 #else
 
