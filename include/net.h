@@ -12,6 +12,9 @@
 #define RECV_BUF_SIZE 32
 #define NET_COMMAND_SIZE 3
 
+#define MAX_PENDING 5
+#define LISTEN_PORT 9099
+
 
 #define DIE(msg) { perror ( msg ); exit ( 1 ); }
 
@@ -33,8 +36,8 @@ int handle_tcp_connection ( int, char*(*)( char* ) );
 
 #endif
 
-//int create_tcp_socket ( unsigned short );
-//int accept_tcp_connection ( int );
+int create_tcp_socket ( unsigned short );
+int accept_tcp_connection ( int );
 
 void run_server ( char*(*)( char* ) );
 

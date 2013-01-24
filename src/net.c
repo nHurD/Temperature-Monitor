@@ -17,10 +17,7 @@
 #include "net.h"
 
 
-#define MAX_PENDING 5
 
-
-#define LISTEN_PORT 9099
 
 #ifndef D_PTHREAD
 /* Handle tcp connection:
@@ -153,6 +150,7 @@ int accept_tcp_connection ( int sock ) {
     
 }
 
+#ifndef D_PTHREAD
 /* Run Server
  *  Function tat will create a new socket, accept and handle connections from clients
  */
@@ -228,4 +226,5 @@ void run_server ( char* ( *callback ) ( char* ) ) {
 
     
 }
+#endif
 

@@ -50,7 +50,7 @@ int handle_tcp_connection ( void *ptr ) {
             case 1:
                 
                 if ( FD_ISSET ( arg->socket, &readSet ) ) {
-                    while ( message_finished == 0 ) {
+                    while ( message_finished == 0  && no_error == 1 ) {
                         read_len = recv ( arg->socket, buffer, RECV_BUF_SIZE, 0 );
                         
                         /* Recv error */
@@ -62,6 +62,7 @@ int handle_tcp_connection ( void *ptr ) {
                         
                         /* Client closed connection */
                         if ( read_len == 0 ) {
+                            FD_CLR ( arg->socket, &readSet );
                             close ( arg->socket );
                             no_error = 0;
                             break;
@@ -91,10 +92,12 @@ int handle_tcp_connection ( void *ptr ) {
                         }
                     }
                     
-                    if ( arg->call_back != NULL ) {
+                    if ( arg->call_back != NULL && no_error == 1 ) {
                         char *data = arg->call_back ( message );
                         
                         free ( message );
+                        
+                        message = NULL;
                         
                         if ( send ( arg->socket, data, strlen ( data ), 0 ) != strlen ( data ) ) {
                             no_error = 0;
@@ -119,18 +122,50 @@ int handle_tcp_connection ( void *ptr ) {
 
 
 void run_server ( char* ( *callback ) ( char* ) ) {
+    int listener;
+    arg_t *arg;
+    
+    pthread_t thread = (pthread_t)NULL;
+    
+    listener = create_tcp_socket ( LISTEN_PORT );
+    
+    
+    for ( ;; ) {
+        arg = malloc ( sizeof (arg_t ) );
+        
+        if (arg == NULL ) {
+            DIE ("malloc() arg." );
+            
+        }
+        
+        arg->call_back = callback;
+        arg->socket = accept_tcp_connection ( listener );
+        arg->attr = malloc ( sizeof ( pthread_attr_t ) );
+        
+        pthread_attr_init ( arg->attr );
+        pthread_attr_setdetachstate ( arg->attr, PTHREAD_CREATE_DETACHED );
+        pthread_create( &thread, arg->attr, handle_tcp_connection, arg );
+        
+        
+        
+    }
+    
     
     
 }
 
-
-/* Used for testing */
-int main ( void ) {
+char *test_callback ( char *data ) {
+    
+    printf ( "%s\n", data );
+    
+    char *result = malloc ( RECV_BUF_SIZE );
+    snprintf ( result, RECV_BUF_SIZE, "Test." );
+    
+    return result;
     
     
-    
-    return 0;
 }
+
 
 
 #endif
