@@ -174,18 +174,4 @@ void run_server ( char* ( *callback ) ( char* ) ) {
     
 }
 
-char *test_callback ( char *data ) {
-    
-    printf ( "%s\n", data );
-    
-    char *result = malloc ( RECV_BUF_SIZE );
-    snprintf ( result, RECV_BUF_SIZE, "Test." );
-    
-    return result;
-    
-    
-}
-
-
-
 #endif
