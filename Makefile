@@ -7,7 +7,7 @@ SOURCES = src/w1.c
 OBJECTS = $(SOURCES: .c=.o) 
 TARGET = libw1.so
 PROG_NAME = get_temperature
-PROG_SRC = src/main.c src/sqlite.c src/net.c src/net_pthread.c
+PROG_SRC = src/main.c src/sqlite.c src/net.c src/net_pthread.c src/callbacks.c src/daemon.c
 
 HOST = 192.168.1.6
 USER = root
