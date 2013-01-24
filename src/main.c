@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <signal.h>
 
 
 #include "sqlite.h"
@@ -90,7 +91,7 @@ int main ( void ) {
 
 
 char *net_communication_callback ( char * data ) {
-    char *result;
+    char *result = NULL;
     char *cmd;
     char *temporary_value;
     
@@ -157,7 +158,6 @@ char *net_communication_callback ( char * data ) {
         
         tmp[ strlen ( tmp ) - 1 ] = 0;
         
-        printf ( "Data: '%s'\n", tmp );
         
         float temperature = get_temperature_from_data ( read_data ( tmp ) );
         
