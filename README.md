@@ -5,7 +5,7 @@ This project was created as a means for me to learn more about other languages (
 
 #### Goals
 
-- Create Linux Daemon to continuosly monitor temperature
+- ~~Create Linux Daemon to continuosly monitor temperature~~
 - Create client application(s) to render information into a chart
 - Create web front end to monitor results
 
