@@ -1,13 +1,13 @@
 //
 //  callbacks.h
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/24/13.
 //
 //
 
-#ifndef BeagleBone_callbacks_h
-#define BeagleBone_callbacks_h
+#ifndef _callbacks_h
+#define _callbacks_h
 
 
 #define TO_FARENHEIT(C) (1.8 * C) + 32

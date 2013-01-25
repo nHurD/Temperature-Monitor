@@ -1,13 +1,13 @@
 //
 //  w1.h
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/9/13.
 //
 //
 
-#ifndef BeagleBone_w1_h
-#define BeagleBone_w1_h
+#ifndef _w1_h
+#define _w1_h
 
 
 #define ROM_CODE_LENGTH 16

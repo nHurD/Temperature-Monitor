@@ -1,13 +1,13 @@
 //
 //  net.h
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/14/13.
 //
 //
 
-#ifndef BeagleBone_net_h
-#define BeagleBone_net_h
+#ifndef _net_h
+#define _net_h
 
 #define RECV_BUF_SIZE 32
 #define NET_COMMAND_SIZE 3

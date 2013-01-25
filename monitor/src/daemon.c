@@ -1,6 +1,6 @@
 //
 //  daemon.c
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/22/13.
 //

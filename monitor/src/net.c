@@ -1,6 +1,6 @@
 //
 //  net.c
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/14/13.
 //

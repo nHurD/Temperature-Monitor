@@ -1,13 +1,13 @@
 //
 //  daemon.h
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/22/13.
 //
 //
 
-#ifndef BeagleBone_daemon_h
-#define BeagleBone_daemon_h
+#ifndef _daemon_h
+#define _daemon_h
 
 #define RUNNING_DIR "/home/root"
 #define LOCK_FILE "daemon.lock"

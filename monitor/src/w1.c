@@ -1,6 +1,6 @@
 //
 //  w1.c
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/9/13.
 //

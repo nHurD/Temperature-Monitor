@@ -1,13 +1,13 @@
 //
 //  sqlite.h
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/13/13.
 //
 //
 
-#ifndef BeagleBone_sqlite_h
-#define BeagleBone_sqlite_h
+#ifndef _sqlite_h
+#define _sqlite_h
 
 #include <time.h>
 

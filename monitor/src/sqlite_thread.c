@@ -1,6 +1,6 @@
 //
 //  sqlite_thread.c
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/24/13.
 //

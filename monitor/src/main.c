@@ -1,6 +1,6 @@
 //
 //  main.c
-//  BeagleBone
+//  TemperatureMonitor
 //
 //  Created by Jonathan Steele on 1/11/13.
 //
