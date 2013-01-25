@@ -135,8 +135,11 @@ float get_temperature_from_data ( char *data ) {
     /* Move the pointer past t= */
     pos += 2;
     
+    
+    
     /* Set Null char at end */
     pos[strlen(pos)-1] = '\0';
+    
     
     /* Convert to float, then divide by 1000 */
     result = atof(pos) / 1000;

@@ -52,7 +52,7 @@ extern int list_slaves ( int busid, char **result ) {
     fd = open ( path, O_RDONLY );
     if ( fd < 0 ) {
         perror ( "list_slaves/open" );
-        exit ( 1 );
+        return -1;
     }
     
     /* Read information from our bus. */
@@ -110,12 +110,13 @@ extern char *read_data ( char *slave ) {
     /* Parse the path for our slave device */
     PARSE_PATH ( W1_PATHS[1], slave, file );
     
-    fp = fopen ( file, "r");
+    fp = fopen ( file, "r" );
     
     /* Sanity check for the file */
     if (fp == NULL){
         perror("Unable to open device");
-        exit (-1);
+        return NULL;
+        
     }
     
     /* Determine the file size, then reset to the beginning of the file */

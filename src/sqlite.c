@@ -68,7 +68,7 @@ int init_connection ( char *path ) {
         result = sqlite3_open ( path, &_ctx );
         
         
-        create_database ( path );
+        result = create_database ( path );
         
         return result;
         
@@ -124,7 +124,7 @@ int create_database ( char *path ) {
 /* Insert Data:
  *  Insert data into the Temperature Data table for later analysis
  */
-int insert_data ( DATA *data ) {
+int insert_data ( tempdata_t *data ) {
     int             result = 0;
     sqlite3_stmt    *statement;
     

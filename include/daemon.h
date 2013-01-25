@@ -20,7 +20,7 @@
 
 void daemonize ( );
 
-void run_as_daemon ( );
+void run_as_daemon ( int, char ** );
 
 
 #endif

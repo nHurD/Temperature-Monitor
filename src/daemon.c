@@ -13,13 +13,45 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
-
+#include <stdarg.h>
+#include <pthread.h>
 
 #include "daemon.h"
 #include "net.h"
+#include "callbacks.h"
+#include "sqlite.h"
+
+
+void log_message ( const char *message, ... ) {
+    FILE *logfile;
+    
+    va_list argptr;
+
+    logfile = fopen ( LOG_FILE, "a" );
+    if ( !logfile ) return;
+    
+    va_start ( argptr, message );
+    vfprintf ( logfile, message, argptr );
+    
+    va_end ( argptr );
+    
+        
+    fclose ( logfile );
+    
+}
+
 
 void sig_handler ( int sig ) {
- 
+    
+    switch ( sig ) {
+        case SIGHUP:
+            log_message ( "Received SIGHUP\n" );
+            break;
+        case SIGTERM:
+            log_message ( "Received SIGTERM\n" );
+            close_connection ( );
+            break;
+    }
     
 }
 
@@ -62,16 +94,50 @@ void daemonize ( ) {
     
     if ( lockf ( lock_file, F_TLOCK, 0) < 0 ) exit ( 0 );
     
+    
     sprintf (str, "%d\n", getpid ( ) );
     
-    write ( lock_file, strlen ( str ) );
+    log_message ( "Forking into background with pid %d\n", getpid ( ) );
     
+    write ( lock_file, str, strlen ( str ) );
+    
+    /* Ignore the following signals */
+    signal ( SIGCHLD, SIG_IGN );
+    signal ( SIGTSTP, SIG_IGN );
+    signal ( SIGTTOU, SIG_IGN );
+    signal ( SIGTTIN, SIG_IGN );
+    
+    /* Handle these signals */
+    signal ( SIGHUP, sig_handler );
+    signal ( SIGTERM, sig_handler );
     
     
     
 }
 
 
-void run_as_daemon ( ) {
+void run_as_daemon ( int argc, char **argv ) {
     
+    /* Create thread for sqlite storage */
+    pthread_t sqlite;
+    
+    pthread_attr_t *atr;
+    
+    
+    atr = malloc ( sizeof ( pthread_attr_t ) );
+    
+    pthread_attr_init ( atr );
+    
+    //pthread_attr_setdetachstate ( atr, PTHREAD_CREATE_DETACHED );
+    
+    pthread_create ( &sqlite,
+                     atr,
+                     sqlite_thread,
+                     NULL
+                   );
+    
+    
+    
+    run_server ( net_communication_callback );
+
 }
