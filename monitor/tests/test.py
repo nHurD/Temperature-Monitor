@@ -14,3 +14,5 @@ client.send("RTF 28-000004472e3e\n")
 print client.recv(100)
 
 client.close()
+
+    
