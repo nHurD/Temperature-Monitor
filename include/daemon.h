@@ -9,7 +9,7 @@
 #ifndef BeagleBone_daemon_h
 #define BeagleBone_daemon_h
 
-#define RUNNING_DIR "/root"
+#define RUNNING_DIR "/home/root"
 #define LOCK_FILE "daemon.lock"
 
 #define LOG_FILE "daemon.log"
