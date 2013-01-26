@@ -1,7 +1,7 @@
 import template
 
 import cherrypy
-from cherrypy import plugins
+from cherrypy.process import plugins
 from mako.lookup import TemplateLookup
 
 __all__ = ['MakoPlugin']
@@ -34,7 +34,7 @@ class MakoPlugin ( plugins.SimplePlugin ):
     def stop ( self ):
         self.bus.log ( "Freeing Mako Resources" )
 
-        self.bus.unsubscribe ( "lookup-template" )
+        self.bus.unsubscribe ( "lookup-template", self.get_template )
         self.lookup = None
 
 

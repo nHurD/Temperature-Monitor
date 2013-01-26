@@ -2,7 +2,7 @@ import os.path
 
 import cherrypy
 from mako import exceptions
-from mako.Template import Template
+from mako.template import Template
 
 
 __all__ = ['TEmplateTool']
@@ -24,7 +24,7 @@ class TemplateTool ( cherrypy.Tool ):
 
         template = cherrypy.engine.publish ( "lookup-template", template ).pop ( )
 
-        if template and isinsntance ( data, dict ):
+        if template and isinstance ( data, dict ):
             if debug:
                 try:
                     cherrypy.response.body = template.render ( **data )

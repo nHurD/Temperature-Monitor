@@ -1,6 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy.types import Integer, String, Float, DateTime
 
+from lib.model import Base
 
 # Table informaiton
 #    row_id INTEGER PRIMARY KEY AUTOINCREMENT
@@ -24,4 +25,4 @@ class TemperatureData ( Base ):
         self.sensor_id      = sensor_id
         self.temperature    = temperature
 
-  
+   

@@ -13,13 +13,13 @@ class DBTool ( cherrypy.Tool ):
 
     def _setup ( self ):
         cherrypy.Tool._setup ( self )
-        cherrypy.requests.hooks.attach ( "on_end_resource",
+        cherrypy.request.hooks.attach ( "on_end_resource",
                                          self.commit_transaction,
                                          priority = 80
                                        )
 
     def bind_session ( self ):
-        session = cherrypy.engie.publish ( "bind-session" ).pop ( )
+        session = cherrypy.engine.publish ( "bind-session" ).pop ( )
         cherrypy.request.db = session
 
     def commit_transaction ( self ):
@@ -27,4 +27,4 @@ class DBTool ( cherrypy.Tool ):
             return
 
         cherrypy.request.db = None
-        cherrypy.engie.publish ( "commit-session" )
+        cherrypy.engine.publish ( "commit-session" )
