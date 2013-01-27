@@ -34,6 +34,8 @@
                             temperature REAL                            \
                          );"
 
+#define CREATE_INDEX "CREATE INDEX IDX_DATE on TemperatureData ( time_data, temperature );"
+
 #define INSERT_STATEMENT "INSERT INTO TemperatureData (     \
                             time_data,                      \
                             sensor_id,                      \
@@ -115,6 +117,15 @@ int create_database ( char *path ) {
     result = sqlite3_step ( statement );
     
     SANITY_CHECK ( result, SQLITE_DONE, "step create" );
+    
+    result = sqlite3_prepare ( _ctx, CREATE_INDEX, strlen ( CREATE_INDEX ), &statement, NULL );
+    
+    SANITY_CHECK ( result, SQLITE_OK, "prepare index" );
+    
+    result = sqlite3_step ( statement );
+    
+    SANITY_CHECK ( result, SQLITE_OK, "step index" );
+                               
     
     sqlite3_finalize ( statement );
     
