@@ -56,7 +56,7 @@ int init_connection ( char *path ) {
     int result = 0;
     
     /* Try to open the specified database */
-    result = sqlite3_open_v2 ( path, &_ctx, SQLITE_OPEN_READWRITE, NULL );
+    result = sqlite3_open_v2 ( path, &_ctx, SQLITE_OPEN_READWRITE | SQLITE_OPEN_NOMUTEX, NULL );
     
     /* Sanity check */
     if ( result != SQLITE_OK ) {

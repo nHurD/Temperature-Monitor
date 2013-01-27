@@ -86,7 +86,11 @@ void daemonize ( ) {
     
     umask ( ( mode_t ) 027 );
     
-    chdir ( RUNNING_DIR );
+    i = chdir ( RUNNING_DIR );
+    
+    if ( i < 0 ) {
+        DIE ( "Unable to chdir" );
+    }
     
     lock_file = open ( LOCK_FILE, O_RDWR | O_CREAT, 0640 );
     

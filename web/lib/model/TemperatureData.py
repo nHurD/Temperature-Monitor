@@ -26,3 +26,13 @@ class TemperatureData ( Base ):
         self.temperature    = temperature
 
    
+    @staticmethod
+    def all ( db, offset=0, limit=None ):
+        if limit == None:
+             return db.query ( TemperatureData ).offset ( offset )
+        else:
+             return db.query ( TemperatureData ).offset ( offset ).limit ( limit )
+
+    @staticmethod
+    def date_span ( db, start, end ):
+        return db.query ( TemperatureData ).filter ( TemperatureData.time_data >= start, TemperatureData.time_data <= end )
