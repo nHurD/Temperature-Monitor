@@ -17,11 +17,19 @@ class Server ( object ):
 
         if not os.path.exists ( log_dir ):
             os.mkdir ( log_dir )
+        
+        server_config = { 'global': {
+                                        'server.socket_host': "0.0.0.0",
+                                        'server.socket_port': 8090,
+                                        'server.thread_pool': 10,
+                                        'engine.autoreload_on': False,
+                                        'log.error_file': "./logs/error.log",
+                                        'log.access_file': "./logs/access.log"
+                            }
+        }
 
-#        cherrypy.config.update ( os.path.join ( self.config_path, "server.cfg" ) )
-                
-        cherrypy.server.socket_host = "0.0.0.0"
-
+        cherrypy.config.update ( server_config )
+        
         engine = cherrypy.engine
 
         sys.path.insert ( 0, self.base_dir )
@@ -35,10 +43,30 @@ class Server ( object ):
 
         from app.TemperatureMonitor import TemperatureMonitor
         webapp = TemperatureMonitor ( )
-
-#        app = cherrypy.tree.mount ( webapp, "/", os.path.join ( self.config_path, "app.cfg" ) )
                 
-        app = cherrypy.tree.mount ( webapp, "/", { '/': { 'tools.db.on' : True } } )
+        app_config = { '/': {
+                                'tools.staticdir.root' : os.path.normpath(os.path.abspath(os.path.curdir)),
+                                'tools.staticfile.root' : os.path.normpath(os.path.abspath(os.path.curdir)),
+                                'tools.db.on' : True,
+                                'tools.encode.on' : False,
+                                'tools.gzip.on' : True,
+                                'tools.gzip.mime_types' : ['text/html', 'text/plain', 'application/json', 'text/javascript', 'application/javascript'],
+                                'tools.sessions.on' : True,
+                                'tools.sessions.storage_type' : "file",
+                                'tools.sessions.storage_path' : os.path.join("/tmp/", "temperature_sessions")
+
+                            },
+                    '/static': {
+                                    'tools.db.on' : False,
+                                    'tools.etags.on' : True,
+                                    'tools.staticdir.on' : True,
+                                    'tools.staticdir.dir' : "public"
+                            }
+        }
+
+        app = cherrypy.tree.mount ( webapp, "/", app_config )
+                
+        
         from lib.plugin.template import MakoPlugin
         engine.mako = MakoPlugin ( engine,
                                       os.path.join ( self.base_dir, "template" ),
