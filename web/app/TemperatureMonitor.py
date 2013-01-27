@@ -9,7 +9,7 @@ __all__ = ['TemperatureMonitor']
 class TemperatureMonitor ( object ):
 
     @cherrypy.expose
-    @cherrypy.tools.render(template="index.mako")
+    @cherrypy.tools.render ( template="index.mako" )
     def index (self ):
         pass
 
@@ -20,7 +20,11 @@ class TemperatureMonitor ( object ):
         db = cherrypy.request.db
         data = []
         for temp in db.query ( TemperatureData ):
-            data.append( { 'row_id': temp.row_id, 'sensor': temp.sensor_id, 'date': '%s' % temp.time_data, 'temperature': temp.temperature } )
+            data.append( {
+                        'row_id': temp.row_id,
+                        'sensor': temp.sensor_id,
+                        'date': '%s' % temp.time_data,
+                        'temperature': temp.temperature } )
         
         result = { 'count' : 10, 'data': data }
 

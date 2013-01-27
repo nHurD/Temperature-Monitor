@@ -12,6 +12,7 @@
 #include <sqlite3.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "sqlite.h"
 #include "w1.h"
@@ -23,14 +24,14 @@ void *sqlite_thread ( void *arg ) {
     int slave_len;
     int i;
     
-    char **slaves;
+    register char **slaves;
     
-    tempdata_t *temp_data;
+    register tempdata_t *temp_data;
     
-    status = init_connection ( DB_FILE );
     
     for ( ;; ) {
         
+        status = init_connection ( DB_FILE );
         
         slaves = malloc ( 1 * sizeof ( *slaves ) );
         slave_len = list_slaves ( 1, slaves );
@@ -60,6 +61,8 @@ void *sqlite_thread ( void *arg ) {
             temp_data = NULL;
             
             
+            close_connection ( );
+            
         }
         
         free ( slaves );
@@ -70,6 +73,6 @@ void *sqlite_thread ( void *arg ) {
                 
     }
 
-    close_connection ( );
+    
     return NULL;
 }

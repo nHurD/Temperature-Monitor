@@ -18,7 +18,9 @@ class Server ( object ):
         if not os.path.exists ( log_dir ):
             os.mkdir ( log_dir )
 
-        cherrypy.config.update ( os.path.join ( self.config_path, "server.cfg" ) )
+#        cherrypy.config.update ( os.path.join ( self.config_path, "server.cfg" ) )
+                
+        cherrypy.server.socket_host = "0.0.0.0"
 
         engine = cherrypy.engine
 
@@ -34,8 +36,9 @@ class Server ( object ):
         from app.TemperatureMonitor import TemperatureMonitor
         webapp = TemperatureMonitor ( )
 
-        app = cherrypy.tree.mount ( webapp, "/", os.path.join ( self.config_path, "app.cfg" ) )
-
+#        app = cherrypy.tree.mount ( webapp, "/", os.path.join ( self.config_path, "app.cfg" ) )
+                
+        app = cherrypy.tree.mount ( webapp, "/", { '/': { 'tools.db.on' : True } } )
         from lib.plugin.template import MakoPlugin
         engine.mako = MakoPlugin ( engine,
                                       os.path.join ( self.base_dir, "template" ),
