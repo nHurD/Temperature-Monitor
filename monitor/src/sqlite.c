@@ -34,7 +34,7 @@
                             temperature REAL                            \
                          );"
 
-#define CREATE_INDEX "CREATE INDEX IDX_DATE on TemperatureData ( time_data, temperature );"
+#define CREATE_INDEX "CREATE INDEX IDX_DATE on TemperatureData ( time_data );"
 
 #define INSERT_STATEMENT "INSERT INTO TemperatureData (     \
                             time_data,                      \
