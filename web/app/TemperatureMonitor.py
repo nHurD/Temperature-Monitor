@@ -36,6 +36,21 @@ class TemperatureMonitor ( object ):
     def index (self ):
         pass
 
+    @cherrypy.expose
+    @cherrypy.tools.json_out ( )
+    def TemperatureData ( self ):
+        json_format = lambda val: { 'time_data' : val[1], 'temperature': val[2] }
+        data = []
+        query = "Select row_id, time_data, temperature from TemperatureData where (row_id - ( select row_id from TemperatureData order by row_id limit 1)) % 1000 = 0"
+
+        for row in self.fetch_data ( query ):
+            data.append ( json_format ( row ) )
+
+        result = { 'count' : len ( data ), 'data' : data }
+        return result
+
+
+
     
     @cherrypy.expose
     @cherrypy.tools.json_out ( )

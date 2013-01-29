@@ -28,10 +28,9 @@ void *sqlite_thread ( void *arg ) {
     
     register tempdata_t *temp_data;
     
+    status = init_connection ( DB_FILE );
     
     for ( ;; ) {
-        
-        status = init_connection ( DB_FILE );
         
         slaves = malloc ( 1 * sizeof ( *slaves ) );
         slave_len = list_slaves ( 1, slaves );
@@ -61,7 +60,7 @@ void *sqlite_thread ( void *arg ) {
             temp_data = NULL;
             
             
-            close_connection ( );
+         
             
         }
         
@@ -73,6 +72,7 @@ void *sqlite_thread ( void *arg ) {
                 
     }
 
+    close_connection ( );
     
     return NULL;
 }
