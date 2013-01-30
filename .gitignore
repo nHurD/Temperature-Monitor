@@ -4,3 +4,6 @@ BeagleBone.xcodeproj/*
 TemperatureMonitor.xcodeproj
 TemperatureMonitor.xcodeproj/*
 
+*.pyc
+*.pyo
+
