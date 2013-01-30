@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Highcharts Example</title>
+            <title>Temperature Data for ${name}</title>
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 		<script type="text/javascript">
@@ -30,22 +30,19 @@ $(function () {
             },
             yAxis: {
                 title: {
-                    text: 'Temperature (C)'
+                    text: 'Temperature (F)'
                 },
                 min: 0
             },
             tooltip: {
                 formatter: function() {
                         return '<b>'+ this.series.name +'</b><br/>'+
-                        Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' m';
+                        Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' deg F';
                 }
             },
             
             series: [{
-                name: 'Sensor Data',
-                // Define the data points. All series have a dummy year
-                // of 1970/71 in order to be compared on the same x axis. Note
-                // that in JavaScript, months start at 0 for January, 1 for February etc.
+                name: '${name}',
                 data: [ ]
             }]
         });
@@ -78,7 +75,7 @@ $(function () {
 	</head>
 	<body>
 <script src="/static/js/highcharts.js"></script>
-<script src="/static/js/themes/gray.js"></scipt>
+<script src="/static/js/themes/gray.js"></script>
 <script src="/static/js/modules/exporting.js"></script>
 
 <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>

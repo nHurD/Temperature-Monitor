@@ -38,16 +38,12 @@ class Server ( object ):
         from lib.tool.template import TemplateTool
         cherrypy.tools.render = TemplateTool ( )
 
-        from lib.tool.db import DBTool
-        cherrypy.tools.db = DBTool ( )
-
         from app.TemperatureMonitor import TemperatureMonitor
         webapp = TemperatureMonitor ( )
                 
         app_config = { '/': {
                                 'tools.staticdir.root' : os.path.normpath(os.path.abspath(os.path.curdir)),
                                 'tools.staticfile.root' : os.path.normpath(os.path.abspath(os.path.curdir)),
-                                'tools.db.on' : True,
                                 'tools.encode.on' : False,
                                 'tools.gzip.on' : True,
                                 'tools.gzip.mime_types' : ['text/html', 'text/plain', 'application/json', 'text/javascript', 'application/javascript'],
@@ -57,7 +53,6 @@ class Server ( object ):
 
                             },
                     '/static': {
-                                    'tools.db.on' : False,
                                     'tools.etags.on' : True,
                                     'tools.staticdir.on' : True,
                                     'tools.staticdir.dir' : "public"
@@ -74,10 +69,6 @@ class Server ( object ):
                                      )
         engine.mako.subscribe ( )
 
-
-        from lib.plugin.db import DBEnginePlugin
-        engine.db = DBEnginePlugin ( engine )
-        engine.db.subscribe ( )
 
 
     def run ( self ):
