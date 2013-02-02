@@ -18,6 +18,10 @@
 #include "w1.h"
 #include "callbacks.h"
 
+#include <sys/ipc.h>
+#include <sys/types.h>
+#include <sys/shm.h>
+
 void *sqlite_thread ( void *arg ) {
     
     int status;

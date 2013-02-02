@@ -15,12 +15,16 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <syslog.h>
 
 #include "daemon.h"
 #include "net.h"
 #include "callbacks.h"
 #include "sqlite.h"
 
+
+int pid_file_handle;
 
 void log_message ( const char *message, ... ) {
     FILE *logfile;
@@ -45,75 +49,89 @@ void sig_handler ( int sig ) {
     
     switch ( sig ) {
         case SIGHUP:
-            log_message ( "Received SIGHUP\n" );
+            syslog ( LOG_WARNING, "Received SIGHUP signal." );
             break;
         case SIGTERM:
-            log_message ( "Received SIGTERM\n" );
+            syslog ( LOG_INFO, "Shutting down." );
             close_connection ( );
+            exit ( EXIT_SUCCESS );
             break;
     }
     
 }
 
 
-void daemonize ( ) {
-    int i;
-    int lock_file;
-    char str[10];
+void daemonize (char *run_dir, char *pid_file ) {
+    int pid, sid, i;
+    char pid_str[10];
+    struct sigaction sAction;
+    sigset_t newSigSet;
     
-    /* Already a daemon, return */
-    if ( getppid () == 1 ) return;
+    if ( getppid ( ) == 1 ) {
+        return;
+    }
     
-    i = fork ( );
+    sigemptyset ( &newSigSet );
+    sigaddset ( &newSigSet, SIGCHLD );
+    sigaddset ( &newSigSet, SIGTSTP );
+    sigaddset ( &newSigSet, SIGTTOU );
+    sigaddset ( &newSigSet, SIGTTIN );
+    sigprocmask ( SIG_BLOCK, &newSigSet, NULL );
     
-    if ( i < 0 ) exit ( 1 ); /* Error in fork() */
-    if ( i > 0 ) exit ( 0 ); /* Parent exits */
+    sAction.sa_handler = sig_handler;
+    sigemptyset ( &sAction.sa_mask );
+    sAction.sa_flags = 0;
     
-    setuid ( ROOT_UID );
+    sigaction ( SIGHUP, &sAction, NULL );
+    sigaction ( SIGTERM, &sAction, NULL );
+    sigaction ( SIGINT, &sAction, NULL );
     
-    errno = 0;
+    pid = fork ( );
     
-    setsid ( );
+    if ( pid < 0 ) {
+        exit ( EXIT_FAILURE );
+    }
     
-    /* Close all file descriptors */
+    if ( pid > 0 ) {
+        printf ("Child process created: %d\n", pid );
+        exit ( EXIT_SUCCESS );
+    }
+    
+    /* Child section */
+    umask ( 027 );
+    
+    sid = setsid ( );
+    
+    if ( sid < 0 ) {
+        exit ( EXIT_FAILURE );
+    }
+    
     for ( i = getdtablesize ( ); i >= 0; --i ) {
         close ( i );
     }
     
-    i = open ( "/dev/null" , O_RDWR );
-    dup ( i );
-    dup ( i );
+    close ( STDIN_FILENO );
+    close ( STDOUT_FILENO );
+    close ( STDERR_FILENO );
     
-    umask ( ( mode_t ) 027 );
+    chdir ( run_dir );
     
-    i = chdir ( RUNNING_DIR );
+    pid_file_handle = open ( pid_file, O_RDWR|O_CREAT, 0600 );
     
-    if ( i < 0 ) {
-        DIE ( "Unable to chdir" );
+    if ( pid_file_handle == -1 ) {
+        syslog ( LOG_INFO, "Could not open PID lock file %s, exiting", pid_file );
+        exit ( EXIT_FAILURE );
+        
     }
     
-    lock_file = open ( LOCK_FILE, O_RDWR | O_CREAT, 0640 );
+    if ( lockf ( pid_file_handle, F_TLOCK, 0 ) == -1 ) {
+        syslog ( LOG_INFO, "Could not lock PID lock file %s, exiting", pid_file );
+        exit ( EXIT_FAILURE );
+    }
     
-    if ( lock_file < 0 ) exit ( 1 );
+    sprintf( pid_str, "%d\n", getpid ( ) );
     
-    if ( lockf ( lock_file, F_TLOCK, 0) < 0 ) exit ( 0 );
-    
-    
-    sprintf (str, "%d\n", getpid ( ) );
-    
-    log_message ( "Forking into background with pid %d\n", getpid ( ) );
-    
-    write ( lock_file, str, strlen ( str ) );
-    
-    /* Ignore the following signals */
-    signal ( SIGCHLD, SIG_IGN );
-    signal ( SIGTSTP, SIG_IGN );
-    signal ( SIGTTOU, SIG_IGN );
-    signal ( SIGTTIN, SIG_IGN );
-    
-    /* Handle these signals */
-    signal ( SIGHUP, sig_handler );
-    signal ( SIGTERM, sig_handler );
+    write ( pid_file_handle, pid_str, strlen ( pid_str ) );
     
     
     
@@ -132,7 +150,6 @@ void run_as_daemon ( int argc, char **argv ) {
     
     pthread_attr_init ( atr );
     
-    //pthread_attr_setdetachstate ( atr, PTHREAD_CREATE_DETACHED );
     
     pthread_create ( &sqlite,
                      atr,

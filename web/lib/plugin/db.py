@@ -15,8 +15,7 @@ class DBEnginePlugin ( plugins.SimplePlugin ):
 
     def start ( self ):
         self.bus.log ( "Starting Database Access" )
-        self.sa_engine = create_engine ( "sqlite:////Users/jrsteele/Projects/BeagleBone/temperature_data.db", echo=False )
-        self.sa_engine.flush = self.no_write
+        self.sa_engine = create_engine ( "postgresql://localhost/syslog", echo=False )
         self.bus.subscribe ( "bind-session", self.bind )
 
 
@@ -30,6 +29,3 @@ class DBEnginePlugin ( plugins.SimplePlugin ):
     def bind ( self ):
         self.session.configure ( bind=self.sa_engine )
         return self.session
-
-    def no_write (self, *args, **kwargs ):
-        return
