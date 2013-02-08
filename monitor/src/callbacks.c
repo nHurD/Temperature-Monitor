@@ -10,9 +10,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "callbacks.h"
 #include "w1.h"
 #include "net.h"
-#include "callbacks.h"
+
 
 char *net_communication_callback ( char * data ) {
     char *result = NULL;
@@ -82,12 +83,13 @@ char *net_communication_callback ( char * data ) {
         
         tmp[ strlen ( tmp ) - 1 ] = 0;
         
-        
         float temperature = get_temperature_from_data ( read_data ( tmp ) );
+        
         
         if ( strncmp ( "RTF", cmd, 3 ) == 0 ) {
             temperature = TO_FARENHEIT ( temperature );
         }
+        
         
         str_len = snprintf ( NULL, 0, "%f", temperature );
         
@@ -121,7 +123,7 @@ char *net_communication_callback ( char * data ) {
 
 
 float get_temperature_from_data ( char *data ) {
-    float result = 0.0;
+    double result = 0.0;
     
     /* Find the location of the start of the temperature informaiton */
     char *pos = strstr ( data, "t=" );
@@ -142,7 +144,9 @@ float get_temperature_from_data ( char *data ) {
     
     
     /* Convert to float, then divide by 1000 */
-    result = atof(pos) / 1000;
+    //result = atof(pos) / 1000;
+    result = strtod ( pos, NULL ) / 1000;
+
     
     return result;
     

@@ -63,7 +63,7 @@ void *sqlite_thread ( void *arg ) {
             
             temp_data = NULL;
             
-            
+            sleep ( 10 );
          
             
         }

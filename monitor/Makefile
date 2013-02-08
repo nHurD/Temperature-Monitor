@@ -9,8 +9,8 @@ TARGET = libw1.so
 PROG_NAME = get_temperature
 PROG_SRC = src/main.c src/sqlite.c src/net.c src/net_pthread.c src/callbacks.c src/daemon.c src/sqlite_thread.c
 
-HOST = 192.168.1.6
-USER = root
+HOST = 192.168.1.9
+USER = jrsteele
 
 all: main
 

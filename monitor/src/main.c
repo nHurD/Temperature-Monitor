@@ -20,18 +20,19 @@
 
 int main ( int argc, char **argv ) {
     
-   // run_server ( net_communication_callback );
     
     char *tmp;
    
-    int len = snprintf(NULL, 0, "/home/root/%s", argv[0] );
+    int len = snprintf(NULL, 0, "/var/lib/get_temperature/%s", argv[0] );
    
     tmp = malloc ( len + 1 );
     
-    len = snprintf ( tmp, len+1, "/home/root/%s", argv[0] );
+    len = snprintf ( tmp, len+1, "/var/lib/get_temperature/%s", argv[0] );
     
-    daemonize ( "/home/root/", tmp );
+    daemonize ( "/var/lib/get_temperature/", tmp );
     run_as_daemon ( argc, argv );
+    
+    
     
     return 0;
 }

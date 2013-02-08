@@ -134,7 +134,6 @@ extern char *read_data ( char *slave ) {
     /* Clean up */
     fclose ( fp );
     
-        
     return result;
 }
 

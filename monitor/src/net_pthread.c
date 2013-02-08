@@ -18,6 +18,8 @@
 #include <pthread.h>
 
 #include "net.h"
+#include "w1.h"
+#include "callbacks.h"
 
 void *handle_tcp_connection ( void *ptr ) {
     char buffer[RECV_BUF_SIZE];
