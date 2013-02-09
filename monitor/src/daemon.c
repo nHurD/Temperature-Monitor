@@ -26,6 +26,12 @@
 
 int pid_file_handle;
 
+char *lockFile = NULL;
+
+char *get_lock_file ( ) {
+    return lockFile;
+}
+
 void log_message ( const char *message, ... ) {
     FILE *logfile;
     
@@ -70,6 +76,14 @@ void daemonize (char *run_dir, char *pid_file ) {
     if ( getppid ( ) == 1 ) {
         return;
     }
+    
+    /* set the value of lockFile */
+    int len = snprintf(NULL, 0, "%s/%s", run_dir, pid_file );
+    lockFile = malloc ( len + 1 );
+    memset ( lockFile, '\0', len + 1 );
+    
+    len = snprintf(lockFile, len, "%s%s", run_dir, pid_file );
+
     
     sigemptyset ( &newSigSet );
     sigaddset ( &newSigSet, SIGCHLD );

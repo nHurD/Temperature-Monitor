@@ -17,6 +17,8 @@ void sig_handler ( int );
 
 void daemonize ( char *, char * );
 
+char *get_lock_file ( );
+
 void run_as_daemon ( int, char ** );
 
 
