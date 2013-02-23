@@ -14,7 +14,7 @@
 
 typedef struct {
     int poll_interval;
-    char temperature_scale;
+    char *temperature_scale;
     int listen_port;
     char *database_file;
 } settings_t;

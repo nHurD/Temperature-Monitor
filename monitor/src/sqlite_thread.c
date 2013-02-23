@@ -17,6 +17,7 @@
 #include "sqlite.h"
 #include "w1.h"
 #include "callbacks.h"
+#include "daemon.h"
 
 #include <sys/ipc.h>
 #include <sys/types.h>
@@ -29,6 +30,8 @@ void *sqlite_thread ( void *arg ) {
     int i;
     
     register char **slaves;
+    
+    settings_t *settings = (settings_t *)arg;
     
     register tempdata_t *temp_data;
     
@@ -63,7 +66,7 @@ void *sqlite_thread ( void *arg ) {
             
             temp_data = NULL;
             
-            sleep ( 10 );
+            sleep ( settings->poll_interval );
          
             
         }

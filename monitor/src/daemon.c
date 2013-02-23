@@ -17,6 +17,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <glib.h>
 
 #include "daemon.h"
 #include "net.h"
@@ -157,6 +158,8 @@ void run_as_daemon ( int argc, char **argv ) {
     /* Create thread for sqlite storage */
     pthread_t sqlite;
     
+    settings_t *settings;
+    
     pthread_attr_t *atr;
     
     
@@ -164,11 +167,13 @@ void run_as_daemon ( int argc, char **argv ) {
     
     pthread_attr_init ( atr );
     
+    settings = read_config_file ( "daemon.cfg" );
+    
     
     pthread_create ( &sqlite,
                      atr,
                      sqlite_thread,
-                     NULL
+                     settings
                    );
     
     
