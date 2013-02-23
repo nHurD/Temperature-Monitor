@@ -7,3 +7,5 @@ TemperatureMonitor.xcodeproj/*
 *.pyc
 *.pyo
 
+glib*
+libgl*
