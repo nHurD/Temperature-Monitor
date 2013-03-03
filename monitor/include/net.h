@@ -15,6 +15,8 @@
 #define MAX_PENDING 5
 #define LISTEN_PORT 9099
 
+#include "daemon.h"
+
 
 #define DIE(msg) { perror ( msg ); exit ( 1 ); }
 
@@ -39,6 +41,6 @@ int handle_tcp_connection ( int, char*(*)( char* ) );
 int create_tcp_socket ( unsigned short );
 int accept_tcp_connection ( int );
 
-void run_server ( char*(*)( char* ) );
+void run_server ( settings_t **, char*(*)( char* ) );
 
 #endif

@@ -178,6 +178,6 @@ void run_as_daemon ( int argc, char **argv ) {
     
     
     
-    run_server ( net_communication_callback );
+    run_server ( &settings, net_communication_callback );
 
 }

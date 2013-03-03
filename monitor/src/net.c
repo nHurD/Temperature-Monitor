@@ -15,6 +15,7 @@
 #include <fcntl.h>
 
 #include "net.h"
+#include "daemon.h"
 
 
 
@@ -154,7 +155,7 @@ int accept_tcp_connection ( int sock ) {
 /* Run Server
  *  Function tat will create a new socket, accept and handle connections from clients
  */
-void run_server ( char* ( *callback ) ( char* ) ) {
+void run_server ( settings_t **settings, char* ( *callback ) ( char* ) ) {
     fd_set master;
     fd_set readSet;
     

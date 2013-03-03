@@ -35,7 +35,7 @@ void *sqlite_thread ( void *arg ) {
     
     register tempdata_t *temp_data;
     
-    status = init_connection ( DB_FILE );
+    status = init_connection ( settings->database_file );
     
     for ( ;; ) {
         

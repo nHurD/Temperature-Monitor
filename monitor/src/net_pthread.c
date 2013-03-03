@@ -20,6 +20,7 @@
 #include "net.h"
 #include "w1.h"
 #include "callbacks.h"
+#include "daemon.h"
 
 void *handle_tcp_connection ( void *ptr ) {
     char buffer[RECV_BUF_SIZE];
@@ -143,13 +144,13 @@ void *handle_tcp_connection ( void *ptr ) {
 }
 
 
-void run_server ( char* ( *callback ) ( char* ) ) {
+void run_server ( settings_t **settings, char* ( *callback ) ( char* ) ) {
     int listener;
     arg_t *arg;
     
     pthread_t thread = (pthread_t)NULL;
     
-    listener = create_tcp_socket ( LISTEN_PORT );
+    listener = create_tcp_socket ( (*settings)->listen_port );
     
     
     for ( ;; ) {
