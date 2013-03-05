@@ -18,22 +18,9 @@
 
 
 
+
 int main ( int argc, char **argv ) {
-    
-    
-    char *tmp;
-   
-    int len = snprintf(NULL, 0, "/var/lib/get_temperature/%s", argv[0] );
-   
-    tmp = malloc ( len + 1 );
-    
-    len = snprintf ( tmp, len+1, "/var/lib/get_temperature/%s", argv[0] );
-    
-   // daemonize ( "/var/lib/get_temperature/", tmp );
     run_as_daemon ( argc, argv );
-    
-    
-    
     return 0;
 }
 

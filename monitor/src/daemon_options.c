@@ -26,6 +26,10 @@ void set_default_values ( settings_t **settings ) {
     if ( (*settings)->listen_port == 0 )
         (*settings)->listen_port = LISTEN_PORT;
     
+    if ( (*settings)->run_dir == NULL ) {
+        (*settings)->run_dir = "/var/lib/get_temperature";
+    }
+    
     if ( (*settings)->database_file == NULL ) 
         (*settings)->database_file = "temperature_data.db";
 }
@@ -72,6 +76,12 @@ settings_t *read_config_file ( char *file ) {
                                                     CFG_LISTEN_PORT,
                                                     NULL
                                                  );
+    
+    result->run_dir = g_key_file_get_string ( keyfile,
+                                              CFG_GROUP_NAME,
+                                              CFG_WORKING_DIR,
+                                              NULL
+                                             );
     
     result->database_file = g_key_file_get_string ( keyfile,
                                                     CFG_GROUP_NAME,

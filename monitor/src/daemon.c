@@ -68,7 +68,7 @@ void sig_handler ( int sig ) {
 }
 
 
-void daemonize (char *run_dir, char *pid_file ) {
+void daemonize ( char *run_dir, char *pid_file ) {
     int pid, sid, i;
     char pid_str[10];
     struct sigaction sAction;
@@ -83,7 +83,7 @@ void daemonize (char *run_dir, char *pid_file ) {
     lockFile = malloc ( len + 1 );
     memset ( lockFile, '\0', len + 1 );
     
-    len = snprintf(lockFile, len, "%s%s", run_dir, pid_file );
+    len = snprintf(lockFile, len, "%s/%s", run_dir, pid_file );
 
     
     sigemptyset ( &newSigSet );
@@ -154,6 +154,8 @@ void daemonize (char *run_dir, char *pid_file ) {
 
 
 void run_as_daemon ( int argc, char **argv ) {
+
+    char *tmp;
     
     /* Create thread for sqlite storage */
     pthread_t sqlite;
@@ -163,11 +165,20 @@ void run_as_daemon ( int argc, char **argv ) {
     pthread_attr_t *atr;
     
     
+    settings = read_config_file ( "daemon.cfg" );
+    
+    int len = snprintf(NULL, 0, "%s.pid", argv[0] );
+    
+    tmp = malloc ( len + 1 );
+    
+    len = snprintf ( tmp, len+1, "%s.pid", argv[0] );
+    
+    daemonize ( settings->run_dir, tmp );
+
+    
     atr = malloc ( sizeof ( pthread_attr_t ) );
     
     pthread_attr_init ( atr );
-    
-    settings = read_config_file ( "daemon.cfg" );
     
     
     pthread_create ( &sqlite,

@@ -17,6 +17,7 @@ typedef struct {
     char *temperature_scale;
     int listen_port;
     char *database_file;
+    char *run_dir;
 } settings_t;
 
 
@@ -36,6 +37,7 @@ settings_t *read_config_file ( char * );
 #define CFG_POLL_INTERVAL "poll_interval"
 #define CFG_TEMP_SCALE "scale"
 #define CFG_LISTEN_PORT "port"
+#define CFG_WORKING_DIR "working_dir"
 #define CFG_DATABASE_FILE "database_file"
 
 

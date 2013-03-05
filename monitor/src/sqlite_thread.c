@@ -48,7 +48,11 @@ void *sqlite_thread ( void *arg ) {
 
             temp_data->time_information = time ( NULL );
             temp_data->sensor_id        = malloc ( strlen ( slaves[i] ) + 1 );
-            temp_data->temperature      = get_temperature_from_data ( read_data ( slaves[i] ) );;
+            temp_data->temperature      = get_temperature_from_data ( read_data ( slaves[i] ) );
+            
+            if ( strncmp("F",settings->temperature_scale,1) == 0 ) {
+                temp_data->temperature = TO_FARENHEIT(temp_data->temperature);
+            }
             
             memset ( temp_data->sensor_id, '\0', strlen ( slaves[i] ) + 1 );
             
